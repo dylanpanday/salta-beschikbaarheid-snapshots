@@ -4,14 +4,14 @@ from datetime import date
 import os
 
 LABELS = {
-    "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-BAN.csv",
-    "BVO": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-BVO.csv",
-    "CT": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-CT.csv",
+    "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Bestuursacademie%20Nederland.csv",
+    "BVO": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Boertien%20Vergouwen%20Overduin.csv",
+    "Computrain": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Computrain.csv",
     "ISBW": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ISBW.csv",
-    "MVP": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-MVP.csv",
+    "MVP": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Markus%20Verbeek%20Praehep.csv",
+    "NCOI": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-NCOI%20Opleidingen.csv",
     "NIBE-SVV": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-NIBE-SVV.csv",
-    "NCOI": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-NCOI.csv",
-    "ProEducation": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ProEducation.csv",
+    "Pro Education": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Pro%20Education.csv",
     "Schoevers": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Schoevers.csv",
 }
 
