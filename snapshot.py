@@ -4,15 +4,15 @@ from datetime import date
 import os
 
 LABELS = {
-    "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Bestuursacademie%20Nederland.csv",
-    "BVO": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Boertien%20Vergouwen%20Overduin.csv",
-    "Computrain": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Computrain.csv",
-    "ISBW": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ISBW.csv",
-    "MVP": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Markus%20Verbeek%20Praehep.csv",
-    "NCOI": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-NCOI%20Opleidingen.csv",
-    "NIBE-SVV": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-NIBE-SVV.csv",
-    "Pro Education": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Pro%20Education.csv",
-    "Schoevers": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-Schoevers.csv",
+    "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ban.csv",
+    "BVO": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-bvo.csv",
+    "Computrain": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-computrain.csv",
+    "ISBW": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-isbw.csv",
+    "MVP": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-mvp.csv",
+    "NCOI": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ncoi.csv",
+    "NIBE-SVV": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-nibe-svv.csv",
+    "Pro Education": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-proeducation.csv",
+    "Schoevers": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-schoevers.csv",
 }
 
 today = date.today()
