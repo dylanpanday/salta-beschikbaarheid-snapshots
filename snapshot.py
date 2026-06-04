@@ -5,6 +5,8 @@ from google.oauth2 import service_account
 import os
 import json
 import tempfile
+import sys
+import traceback
 
 LABELS = {
     "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ban.csv",
@@ -25,7 +27,10 @@ TABLE_ID = "startmomenten_snapshots"
 today = date.today()
 rows = []
 
+print(f"Start snapshot voor {today}", flush=True)
+
 for merk, url in LABELS.items():
+    print(f"Laden: {merk}", flush=True)
     df = pd.read_csv(url)
     df["Merk"] = merk
     df["SnapshotDatum"] = today
@@ -46,9 +51,48 @@ for merk, url in LABELS.items():
     )
 
     rows.append(df[["SnapshotDatum", "Merk", "Id", "Name", "Startdatum", "DagenTotStart", "NabijheidCategorie"]])
+    print(f"{merk}: {len(df)} rijen", flush=True)
 
 snapshot = pd.concat(rows)
 snapshot["SnapshotDatum"] = snapshot["SnapshotDatum"].astype(str)
 snapshot["Startdatum"] = snapshot["Startdatum"].astype(str)
 snapshot["NabijheidCategorie"] = snapshot["NabijheidCategorie"].astype(str)
 snapshot["DagenTotStart"] = snapshot["DagenTotStart"].astype(int)
+
+print(f"Totaal: {len(snapshot)} rijen", flush=True)
+
+try:
+    key_json = os.environ["GBQ_SERVICE_ACCOUNT_KEY"]
+    key_dict = json.loads(key_json)
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(key_dict, f)
+        key_path = f.name
+
+    credentials = service_account.Credentials.from_service_account_file(key_path)
+    client = bigquery.Client(project=PROJECT_ID, credentials=credentials)
+
+    table_ref = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
+
+    job_config = bigquery.LoadJobConfig(
+        write_disposition="WRITE_APPEND",
+        schema=[
+            bigquery.SchemaField("SnapshotDatum", "DATE"),
+            bigquery.SchemaField("Merk", "STRING"),
+            bigquery.SchemaField("Id", "STRING"),
+            bigquery.SchemaField("Name", "STRING"),
+            bigquery.SchemaField("Startdatum", "DATE"),
+            bigquery.SchemaField("DagenTotStart", "INTEGER"),
+            bigquery.SchemaField("NabijheidCategorie", "STRING"),
+        ]
+    )
+
+    job = client.load_table_from_dataframe(snapshot, table_ref, job_config=job_config)
+    job.result()
+
+    print(f"Geschreven naar BigQuery: {len(snapshot)} rijen voor {today}", flush=True)
+
+except Exception as e:
+    print(f"FOUT: {e}", flush=True)
+    traceback.print_exc()
+    sys.exit(1)
