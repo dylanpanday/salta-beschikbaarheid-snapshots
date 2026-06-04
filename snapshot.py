@@ -1,7 +1,10 @@
-import requests
 import pandas as pd
 from datetime import date
+from google.cloud import bigquery
+from google.oauth2 import service_account
 import os
+import json
+import tempfile
 
 LABELS = {
     "BAN": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-ban.csv",
@@ -15,9 +18,11 @@ LABELS = {
     "Schoevers": "https://sag7dukf5l53jecp.blob.core.windows.net/course-csv-exports/products-schoevers.csv",
 }
 
-today = date.today()
-os.makedirs("snapshots", exist_ok=True)
+PROJECT_ID = "moonlit-pursuit-265709"
+DATASET_ID = "salta_beschikbaarheid"
+TABLE_ID = "startmomenten_snapshots"
 
+today = date.today()
 rows = []
 
 for merk, url in LABELS.items():
@@ -37,12 +42,7 @@ for merk, url in LABELS.items():
     df["NabijheidCategorie"] = pd.cut(
         df["DagenTotStart"],
         bins=[-1, 14, 30, 90, 99999],
-        labels=["1. ≤ 14 dagen", "2. 15-30 dagen", "3. 31-90 dagen", "4. > 90 dagen"]
+        labels=["1. <= 14 dagen", "2. 15-30 dagen", "3. 31-90 dagen", "4. > 90 dagen"]
     )
 
-    rows.append(df[["SnapshotDatum", "Merk", "Id", "Name", "Startdatum", "DagenTotStart", "NabijheidCategorie"]])
-
-snapshot = pd.concat(rows)
-filename = f"snapshots/snapshot_{today}.csv"
-snapshot.to_csv(filename, index=False)
-print(f"Opgeslagen: {filename} ({len(snapshot)} rijen)")
+    rows.append(df[["SnapshotDatum", "Mer
