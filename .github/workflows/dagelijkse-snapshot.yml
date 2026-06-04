@@ -2,19 +2,21 @@ name: Dagelijkse beschikbaarheid snapshot
 
 on:
   schedule:
-    - cron: '0 5 * * *'  # elke dag om 06:00 Nederlandse tijd
-  workflow_dispatch:  # ook handmatig te starten
+    - cron: '0 5 * * *'
+  workflow_dispatch:
 
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Python instellen
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -26,7 +28,7 @@ jobs:
           GBQ_SERVICE_ACCOUNT_KEY: ${{ secrets.GBQ_SERVICE_ACCOUNT_KEY }}
         run: python snapshot.py
 
-    - name: Snapshot committen
+      - name: Snapshot committen
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
