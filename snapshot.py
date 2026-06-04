@@ -45,4 +45,10 @@ for merk, url in LABELS.items():
         labels=["1. <= 14 dagen", "2. 15-30 dagen", "3. 31-90 dagen", "4. > 90 dagen"]
     )
 
-    rows.append(df[["SnapshotDatum", "Mer
+    rows.append(df[["SnapshotDatum", "Merk", "Id", "Name", "Startdatum", "DagenTotStart", "NabijheidCategorie"]])
+
+snapshot = pd.concat(rows)
+snapshot["SnapshotDatum"] = snapshot["SnapshotDatum"].astype(str)
+snapshot["Startdatum"] = snapshot["Startdatum"].astype(str)
+snapshot["NabijheidCategorie"] = snapshot["NabijheidCategorie"].astype(str)
+snapshot["DagenTotStart"] = snapshot["DagenTotStart"].astype(int)
