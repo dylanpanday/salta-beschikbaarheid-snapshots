@@ -19,7 +19,7 @@ jobs:
           python-version: '3.11'
 
       - name: Dependencies installeren
-        run: pip install pandas requests
+        run: pip install pandas requests google-cloud-bigquery google-auth pyarrow
 
       - name: Snapshot draaien
         run: python snapshot.py
