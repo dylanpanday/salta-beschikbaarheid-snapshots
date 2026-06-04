@@ -1,27 +1,56 @@
-name: Eenmalige historische import
+import pandas as pd
+from google.cloud import bigquery
+from google.oauth2 import service_account
+import os
+import json
+import tempfile
+import sys
+import traceback
+import requests
+import re
 
-on:
-  workflow_dispatch:
+REPO = "dylanpanday/salta-beschikbaarheid-snapshots"
+PROJECT_ID = "moonlit-pursuit-265709"
+DATASET_ID = "salta_beschikbaarheid"
+TABLE_ID = "startmomenten_snapshots"
 
-jobs:
-  import:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
+print("Ophalen lijst met snapshot bestanden...", flush=True)
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+response = requests.get(f"https://api.github.com/repos/{REPO}/contents/snapshots")
+files = response.json()
+csv_files = [f for f in files if f["name"].endswith(".csv")]
+print(f"{len(csv_files)} bestanden gevonden", flush=True)
 
-      - name: Python instellen
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+rows = []
+for f in csv_files:
+    # Datum uit bestandsnaam halen: snapshot_2026-05-04.csv
+    match = re.search(r"snapshot_(\d{4}-\d{2}-\d{2})\.csv", f["name"])
+    if not match:
+        print(f"Overgeslagen (geen datum in naam): {f['name']}", flush=True)
+        continue
+    
+    datum = match.group(1)
+    url = f["download_url"]
+    print(f"Laden: {f['name']} → datum {datum}", flush=True)
+    
+    df = pd.read_csv(url)
+    df["SnapshotDatum"] = datum  # Overschrijf met datum uit bestandsnaam
+    rows.append(df)
 
-      - name: Dependencies installeren
-        run: pip install pandas requests google-cloud-bigquery google-auth pyarrow
+if not rows:
+    print("Geen bestanden gevonden", flush=True)
+    sys.exit(0)
 
-      - name: Historische import draaien
-        env:
-          GBQ_SERVICE_ACCOUNT_KEY: ${{ secrets.GBQ_SERVICE_ACCOUNT_KEY }}
-        run: python import_historical.py
+alle_data = pd.concat(rows)
+alle_data["SnapshotDatum"] = alle_data["SnapshotDatum"].astype(str)
+alle_data["Startdatum"] = alle_data["Startdatum"].astype(str)
+alle_data["NabijheidCategorie"] = alle_data["NabijheidCategorie"].astype(str)
+alle_data["DagenTotStart"] = alle_data["DagenTotStart"].astype(int)
+
+print(f"Totaal: {len(alle_data)} rijen over {len(rows)} snapshots", flush=True)
+
+try:
+    key_json = os.environ["GBQ_SERVICE_ACCOUNT_KEY"]
+    key_dict = json.loads(key_json)
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=Fal
