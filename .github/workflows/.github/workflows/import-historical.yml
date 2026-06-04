@@ -25,3 +25,4 @@ jobs:
         env:
           GBQ_SERVICE_ACCOUNT_KEY: ${{ secrets.GBQ_SERVICE_ACCOUNT_KEY }}
         run: python import_historical.py
+
