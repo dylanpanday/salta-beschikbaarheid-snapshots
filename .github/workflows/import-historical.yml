@@ -1,0 +1,27 @@
+name: Eenmalige historische import
+
+on:
+  workflow_dispatch:
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Python instellen
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dependencies installeren
+        run: pip install pandas requests google-cloud-bigquery google-auth pyarrow
+
+      - name: Historische import draaien
+        env:
+          GBQ_SERVICE_ACCOUNT_KEY: ${{ secrets.GBQ_SERVICE_ACCOUNT_KEY }}
+        run: python import_historical.py
