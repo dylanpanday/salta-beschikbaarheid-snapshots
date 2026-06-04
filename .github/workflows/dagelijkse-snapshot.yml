@@ -22,6 +22,8 @@ jobs:
         run: pip install pandas requests google-cloud-bigquery google-auth pyarrow
 
       - name: Snapshot draaien
+        env:
+          GBQ_SERVICE_ACCOUNT_KEY: ${{ secrets.GBQ_SERVICE_ACCOUNT_KEY }}
         run: python snapshot.py
 
       - name: Snapshot committen
